@@ -1,8 +1,21 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+from prometheus_fastapi_instrumentator import Instrumentator
+import logging
+from pythonjsonlogger import jsonlogger
 
 app = FastAPI(title="Book Inventory API")
+# Configuration des logs en JSON
+logger = logging.getLogger()
+logHandler = logging.StreamHandler()
+formatter = jsonlogger.JsonFormatter()
+logHandler.setFormatter(formatter)
+logger.addHandler(logHandler)
+logger.setLevel(logging.INFO)
+logger.info("Démarrage de l'application DevOps", extra={"version": "1.0", "env": "dev"})
+# Configuration de l'instrumentation Prometheus
+Instrumentator().instrument(app).expose(app)
 
 # A simple "Database" in memory
 inventory = []
@@ -32,4 +45,8 @@ def add_book(book: Book):
 # Root endpoint
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the DevOps Project API!"}
+    # C'est ici qu'on déclenche le log JSON
+    logger.info("Accès à la page d'accueil", extra={"user": "admin", "action": "visit"})
+    return {"message": "Hello DevOps"}
+
+
