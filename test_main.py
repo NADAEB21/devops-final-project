@@ -6,7 +6,8 @@ client = TestClient(app)
 def test_read_main():
     response = client.get("/")
     assert response.status_code == 200
-    assert response.json() == {"message": "Welcome to the DevOps Project API!"}
+    # Change this line to match the new message in main.py
+    assert response.json() == {"message": "Hello DevOps"}
 
 def test_health_check():
     response = client.get("/health")
